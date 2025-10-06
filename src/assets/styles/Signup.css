@@ -1,0 +1,128 @@
+/* Wrapper centers the card */
+.signup-page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f9fafb;
+  padding: 10px;
+}
+
+/* Card */
+.signup-card {
+  background: #fff;
+  padding: 44px 34px 38px 34px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  width: 460px;
+  min-height: 420px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  margin: 36px auto;
+}
+
+.signup-card h2 {
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* Form */
+.form-group {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #f9fafb;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+  background: #fff;
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 14px;
+  background: #111827;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+
+.signup-btn:hover {
+  background: #000;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #6b7280;
+  margin: 24px 0;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.divider span {
+  margin: 0 12px;
+}
+
+.signin-btn {
+  width: 100%;
+  padding: 14px;
+  background: #fff !important;
+  color: #111827 !important;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+
+.signin-btn:hover {
+  background: #c6cbcf;
+  border-color: #d1d5db;
+}
