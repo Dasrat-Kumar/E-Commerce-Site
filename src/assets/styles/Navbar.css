@@ -157,7 +157,9 @@
     align-items: center;
 }
 
-/* Responsive styles */
+/* ---------- Responsive Styles ---------- */
+
+
 @media (max-width: 768px) {
     .mobile-only {
         display: block;
