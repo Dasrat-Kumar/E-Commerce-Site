@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "../assets/styles/Navbar.css";
-import { Package, Search, ShoppingCart, User, LogOut, Pencil, Trash2, Plus, Minus } from "lucide-react";
+import { Package, Search, ShoppingCart, User, LogOut, Menu, X } from "lucide-react";
 import { CartContext } from "../context/CartContext.js";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 function Navbar() {
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
   const { cart } = useContext(CartContext);
@@ -22,7 +23,12 @@ function Navbar() {
   const handleLogout = async () => {
     await signOut(auth);
     setDropdownOpen(false);
+    setMenuOpen(false);
     navigate("/login");
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   // Calculate cart item count
@@ -30,7 +36,6 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      {/* Left navbar / Logo */}
       <div className="left-navbar">
         <Link to="/" className="icon-package">
           <Package />
@@ -38,16 +43,102 @@ function Navbar() {
         </Link>
       </div>
 
-      {/* Middle / Search bar */}
-      <div className="icon-search">
+      {/* Search bar for desktop */}
+      <div className="icon-search desktop-only">
         <span className="search-icon-wrapper">
           <Search size={20} />
         </span>
         <input type="text" placeholder="Search products..." />
       </div>
 
-      {/* Right Navbar */}
-      <div className="right-navbar">
+      {/* Hamburger toggle button */}
+      <button
+        className="hamburger mobile-only"
+        aria-label="Toggle menu"
+        aria-expanded={menuOpen}
+        onClick={toggleMenu}
+      >
+        {menuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile menu */}
+      <div className={`mobile-menu mobile-only ${menuOpen ? "show" : ""}`}>
+        {/* Search inside mobile menu */}
+        <div className="icon-search">
+          <span className="search-icon-wrapper">
+            <Search size={20} />
+          </span>
+          <input type="text" placeholder="Search products..." />
+        </div>
+
+        {/* Mobile right navbar */}
+        <nav className="right-navbar-mobile">
+          <Link to="/products" className="btn-products" onClick={() => setMenuOpen(false)}>
+            Products
+          </Link>
+
+          {!user ? (
+            <>
+              <Link to="/login" className="btn-login" onClick={() => setMenuOpen(false)}>
+                Login
+              </Link>
+              <Link to="/signup" className="btn-signup" onClick={() => setMenuOpen(false)}>
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              {/* Cart for non-admins */}
+              {user.email !== "admin@ecommercehai.com" && (
+                <Link
+                  to="/cart"
+                  className="btn-products"
+                  style={{ position: "relative" }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <ShoppingCart />
+                  <p className="btn-products-text">Cart</p>
+                  {cartCount > 0 && (
+                    <span className="cart-count">{cartCount}</span>
+                  )}
+                </Link>
+              )}
+              {/* Admin dashboard for admin */}
+              {user.email === "admin@ecommercehai.com" && (
+                <Link to="/admin-dashboard" className="btn-products" onClick={() => setMenuOpen(false)}>
+                  Admin Dashboard
+                </Link>
+              )}
+
+              {/* Profile dropdown */}
+              <div className="profile-dropdown-mobile">
+                <button
+                  className="btn-profile"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  <User />
+                  <p className="btn-profile-text">Profile</p>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="dropdown-menu">
+                    <p className="user-email">{user.email}</p>
+                    <button className="logout-button" onClick={() => {
+                      handleLogout();
+                      setMenuOpen(false);
+                    }}>
+                      <LogOut size={16} /> Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </nav>
+      </div>
+
+      {/* Desktop right navbar */}
+      <nav className="right-navbar desktop-only">
         <Link to="/products" className="btn-products">
           Products
         </Link>
@@ -63,26 +154,20 @@ function Navbar() {
           </>
         ) : (
           <>
-            {/* Cart only for non-admins */}
+            {/* Cart for non-admins */}
             {user.email !== "admin@ecommercehai.com" && (
-              <Link to="/cart" className="btn-products" style={{ position: "relative" }}>
+              <Link
+                to="/cart"
+                className="btn-products"
+                style={{ position: "relative" }}
+              >
                 <ShoppingCart />
                 {cartCount > 0 && (
-                  <span style={{
-                    position: "absolute",
-                    top: -6,
-                    right: -6,
-                    background: "#111827",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    padding: "2px 7px",
-                    fontSize: 12,
-                    fontWeight: 700,
-                  }}>{cartCount}</span>
+                  <span className="cart-count">{cartCount}</span>
                 )}
               </Link>
             )}
-            {/* Admin dashboard link for admin */}
+            {/* Admin dashboard for admin */}
             {user.email === "admin@ecommercehai.com" && (
               <Link to="/admin-dashboard" className="btn-products">
                 Admin Dashboard
@@ -98,9 +183,9 @@ function Navbar() {
               </button>
 
               {dropdownOpen && (
-                <div className="dropdown-menu" style={{ minWidth: 180, right: 0, top: 40, position: "absolute", background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", borderRadius: 8, padding: 12, zIndex: 100 }}>
-                  <p style={{ marginBottom: 8, fontWeight: 500 }}>{user.email}</p>
-                  <button onClick={handleLogout} style={{ width: "100%", background: "#111827", color: "#fff", border: "none", borderRadius: 6, padding: "8px 0", fontWeight: 500, cursor: "pointer" }}>
+                <div className="dropdown-menu">
+                  <p className="user-email">{user.email}</p>
+                  <button className="logout-button" onClick={handleLogout}>
                     <LogOut size={16} /> Logout
                   </button>
                 </div>
@@ -108,7 +193,7 @@ function Navbar() {
             </div>
           </>
         )}
-      </div>
+      </nav>
     </header>
   );
 }
